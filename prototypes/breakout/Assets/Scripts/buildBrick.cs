@@ -5,20 +5,20 @@ using UnityEngine;
 public class buildBrick : MonoBehaviour
 {
 
+    // Wheher or not the brick has beeen broken
     public bool broken = true;
 
+    // The indeces of the brick in the 2D array
     public int column;
     public int row;
 
     public buildinGenerator generator;
     
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -27,12 +27,18 @@ public class buildBrick : MonoBehaviour
      void OnTriggerEnter(Collider collision)
     {
 
-        // if the brick collided with a ball
+        // Enter on four conditions
+        // 1. The object that collided with the brick was a ball
+        // 2. The brick is currently broken
+        // 3. The ball hasn't already built a brick
+        // 4. The brick doesn't have unbuilt brikcs beneath it
         if (collision.gameObject.CompareTag("Ball") && broken && !collision.gameObject.GetComponent<buildinBall>().builtABrick && generator.areBricksBuiltBeneath(row,column)){
+            
             collision.gameObject.GetComponent<buildinBall>().builtABrick = true;
             broken = false;
+
+            // Make the brick visible
             gameObject.GetComponent<MeshRenderer>().enabled = true;
-            //Debug.Log(gameObject.GetComponent<MeshRenderer>().enabled);
         }
 
     }

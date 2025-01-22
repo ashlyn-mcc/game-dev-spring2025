@@ -5,46 +5,52 @@ using UnityEngine;
 public class buildinBall : MonoBehaviour
 {
 
-    private Vector3 velocity = new Vector3(.007f,-.007f,0f);
+    // The velocity of the ball
+    private Vector3 velocity = new Vector3 (0.05f, 0.05f, 0f);
 
+    // Whether it's gone out of bounds
     private bool outOfBounds = false;
 
+    // Timer and amount of time for getting a new ball
     private float newBallTimer = 0;
-
     private float respawnTime = 2f;
 
+    // Whether the ball is visible
     private bool showBall = false;
 
     private int counter = 0;
 
+    // Whether the ball has already built a brick since last hitting the paddle
     public bool builtABrick = false;
     
     void Start()
     {
-        
+    
     }
 
     
     void Update()
     {
 
-       // Debug.Log(brokenABrick);
-
+        // If ball is in bounds, move its position based on velocity
         if (!outOfBounds){
 
             transform.position = transform.position + velocity;
 
-        } else {
+        } else { // If ball is out of bounds
 
+            // Start the timer for a new ball
             newBallTimer += Time.deltaTime;
             transform.position = new Vector3(0,4.5f,-0.28f);
             counter++;
 
+            // Flash the ball on and off to indicate it is about to respawn
             if (newBallTimer > respawnTime - 1.5 && counter % 50 == 0){
                 gameObject.GetComponent<MeshRenderer>().enabled = showBall;
                 showBall = !showBall;
             }
 
+            // Resume gameplay after elapsed time
             if (respawnTime < newBallTimer){
                 outOfBounds = false;
                 gameObject.GetComponent<MeshRenderer>().enabled = true;
@@ -53,15 +59,13 @@ public class buildinBall : MonoBehaviour
 
         }
 
-       // Debug.Log(newBallTimer);
-
         
     }
 
     void OnTriggerEnter(Collider collision)
     {
 
-        // Assume it isn't a brick (proceed as usual)
+        // If the collided object wasn't a brick enter and adjust the velocity based on what time of edge the ball hit
         if (collision.gameObject.GetComponent<buildBrick>() == null){
 
             
@@ -85,13 +89,13 @@ public class buildinBall : MonoBehaviour
                 respawnTime += 1f;
             }
 
-        } else { // Assume it is a brick
+        } else { // Enter if the collided object was a brick
 
-          Debug.Log("GETTING TO ELSE");
+          //Debug.Log("GETTING TO ELSE");
 
             if (collision.gameObject.GetComponent<buildBrick>().broken == false){
 
-                //Vector3 collisionPoint = GetComponent<Collider>().ClosestPoint(transform.position);
+               // I used AI to help me with the calculations for this part:
 
                 // Convert the collision point to the cube's local space
                 Vector3 localCollisionPoint = transform.InverseTransformPoint(collision.transform.position);
@@ -102,14 +106,11 @@ public class buildinBall : MonoBehaviour
                 float z = Mathf.Abs(localCollisionPoint.z);
 
                 // Check which axis has the greatest magnitude to determine the primary direction of collision
-              
                 if (y > z && y > x) {
                     // Collision on the top or bottom face of the cube
                     velocity = Vector3.Scale(velocity, new Vector3(1, -1, 1));
                     Debug.Log("hit top/bottom");
-
                 }
-                
                 if (x > y && x > z) {
                     // Collision on the left or right face of the cube
                     velocity = Vector3.Scale(velocity, new Vector3(-1, 1, 1));
@@ -117,9 +118,6 @@ public class buildinBall : MonoBehaviour
                 }
 
 
-            } else {
-                
-                Debug.Log("broken brick");
             }
 
         }

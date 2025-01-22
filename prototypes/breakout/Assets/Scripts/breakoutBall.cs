@@ -7,7 +7,7 @@ public class breakoutBall : MonoBehaviour
 {
 
     // Velocity of the ball
-    private Vector3 velocity;
+    private Vector3 velocity = new Vector3 (0.05f, 0.05f, 0f);
 
     // Whether or not the ball has gone behind the paddle
     private bool outOfBounds = false;
@@ -27,41 +27,33 @@ public class breakoutBall : MonoBehaviour
     
     void Start()
     {
-        // I used AI for this bit. I wasn't sure how to get random floats in C#
-
-        // Create Random object and define the min and max possible velocities
-        System.Random random = new System.Random();
-        float minValue = 0.1f;
-        float maxValue = 0.2f;
         
-        // Generate a random double between 0 and 1, scale it between the min and max, 
-        // then make sure it is within the range, and then cast as float
-        float randomFloat = (float)(random.NextDouble() * (maxValue - minValue) + minValue);
-
-        // Set the ball's velocity
-        velocity = new Vector3 (minValue, maxValue, 0f);
-
+  
     }
 
     
     void Update()
     {
 
+        // As long as the ball is in bounds, move it according to its velocity
         if (!outOfBounds){
 
             transform.position = transform.position + velocity;
 
         } else {
 
+            // if the ball is out of bounds, start the timer for a new ball
             newBallTimer += Time.deltaTime;
-            transform.position = new Vector3(0,-3.3f,-0.28f);
+            transform.position = new Vector3(0,-2.5f,-0.28f);
             counter++;
 
+            // during the last 1.5 seconds, flash the ball so the player knows they are about to get another one
             if (newBallTimer > respawnTime - 1.5 && counter % 50 == 0){
                 gameObject.GetComponent<MeshRenderer>().enabled = showBall;
                 showBall = !showBall;
             }
 
+            // Once time has elapsed, make the ball visible and resume gameplay
             if (respawnTime < newBallTimer){
                 outOfBounds = false;
                 gameObject.GetComponent<MeshRenderer>().enabled = true;
@@ -70,18 +62,18 @@ public class breakoutBall : MonoBehaviour
 
         }
 
-       // Debug.Log(newBallTimer);
-
         
     }
 
     void OnTriggerEnter(Collider collision)
     {
 
-        // Assume it isn't a brick (proceed as usual)
+        // If the ball hasn't collided with a brick
         if (collision.gameObject.GetComponent<breakBrick>() == null){
 
 
+            // Test if it was a vertical, horizontal, paddle, or out of bounds surface hit.
+            // Change the velocity accordingly
             if (collision.gameObject.CompareTag("Vertical") || collision.gameObject.CompareTag("Paddle")){
                 
                 velocity = Vector3.Scale(velocity,new Vector3(1,-1,0));
@@ -98,17 +90,16 @@ public class breakoutBall : MonoBehaviour
 
                 gameObject.GetComponent<MeshRenderer>().enabled = false;
                 outOfBounds = true;
-                transform.position = new Vector3(0,-3.3f,-0.28f);
+                transform.position = new Vector3(0,-2.5f,-0.28f);
                 respawnTime += 1f;
             }
 
-        } else { // Assume it is a brick
+        } else { 
 
-        
-
+            // If the ball did collide with a brick, and the brick has not yet broken another brick
             if (collision.gameObject.GetComponent<breakBrick>().broken == false){
 
-                //Vector3 collisionPoint = GetComponent<Collider>().ClosestPoint(transform.position);
+                // I used AI for the code inside this if statement:
 
                 // Convert the collision point to the cube's local space
                 Vector3 localCollisionPoint = transform.InverseTransformPoint(collision.transform.position);
@@ -119,14 +110,11 @@ public class breakoutBall : MonoBehaviour
                 float z = Mathf.Abs(localCollisionPoint.z);
 
                 // Check which axis has the greatest magnitude to determine the primary direction of collision
-              
                 if (y > z && y > x) {
                     // Collision on the top or bottom face of the cube
                     velocity = Vector3.Scale(velocity, new Vector3(1, -1, 1));
                     Debug.Log("hit top/bottom");
-
                 }
-                
                 if (x > y && x > z) {
                     // Collision on the left or right face of the cube
                     velocity = Vector3.Scale(velocity, new Vector3(-1, 1, 1));
@@ -134,10 +122,7 @@ public class breakoutBall : MonoBehaviour
                 }
 
 
-            } else {
-                
-                Debug.Log("broken brick");
-            }
+            } 
 
         }
 

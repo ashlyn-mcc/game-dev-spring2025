@@ -5,17 +5,14 @@ using UnityEngine;
 public class breakBrick : MonoBehaviour
 {
 
+    // Whether or not the brick has been broken by the ball
     public bool broken = false;
 
-    public
-
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -24,12 +21,18 @@ public class breakBrick : MonoBehaviour
      void OnTriggerEnter(Collider collision)
     {
 
-        // if the brick collided with a ball
+        // Enter on three conditions
+        // 1. The object that hit the brick was the ball
+        // 2. The brick has not yet already been broken
+        // 3. The ball hasn't already broken a brick
+
         if (collision.gameObject.CompareTag("Ball") && !broken && !collision.gameObject.GetComponent<breakoutBall>().brokenABrick){
             collision.gameObject.GetComponent<breakoutBall>().brokenABrick = true;
             broken = true;
+
+            // Make the brick invisible
             gameObject.GetComponent<MeshRenderer>().enabled = false;
-            //Debug.Log(gameObject.GetComponent<MeshRenderer>().enabled);
+
         }
 
     }
