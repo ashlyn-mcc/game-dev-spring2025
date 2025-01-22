@@ -82,7 +82,7 @@ public class buildinBall : MonoBehaviour
                 gameObject.GetComponent<MeshRenderer>().enabled = false;
                 outOfBounds = true;
                 transform.position = new Vector3(0,4.5f,-0.28f);
-                respawnTime *= 1.5f;
+                respawnTime += 1f;
             }
 
         } else { // Assume it is a brick

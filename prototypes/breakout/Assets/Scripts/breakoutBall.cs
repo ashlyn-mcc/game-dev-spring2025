@@ -1,34 +1,51 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class breakoutBall : MonoBehaviour
 {
 
-    private Vector3 velocity = new Vector3(.007f,.007f,0f);
+    // Velocity of the ball
+    private Vector3 velocity;
 
+    // Whether or not the ball has gone behind the paddle
     private bool outOfBounds = false;
 
+    // The timer to track respawn and the amount of time before respawn allowed
     private float newBallTimer = 0;
-
     private float respawnTime = 2f;
 
+    // Whether or not the ball is shown (disappears if out of bounds)
     private bool showBall = false;
 
+    // Counter to help modulate the ball's appearance when it is respawning
     private int counter = 0;
 
+    // Whether the ball has broken a brick since it last hit the paddle
     public bool brokenABrick = false;
     
     void Start()
     {
+        // I used AI for this bit. I wasn't sure how to get random floats in C#
+
+        // Create Random object and define the min and max possible velocities
+        System.Random random = new System.Random();
+        float minValue = 0.1f;
+        float maxValue = 0.2f;
         
+        // Generate a random double between 0 and 1, scale it between the min and max, 
+        // then make sure it is within the range, and then cast as float
+        float randomFloat = (float)(random.NextDouble() * (maxValue - minValue) + minValue);
+
+        // Set the ball's velocity
+        velocity = new Vector3 (minValue, maxValue, 0f);
+
     }
 
     
     void Update()
     {
-
-       // Debug.Log(brokenABrick);
 
         if (!outOfBounds){
 
@@ -82,7 +99,7 @@ public class breakoutBall : MonoBehaviour
                 gameObject.GetComponent<MeshRenderer>().enabled = false;
                 outOfBounds = true;
                 transform.position = new Vector3(0,-3.3f,-0.28f);
-                respawnTime *= 1.5f;
+                respawnTime += 1f;
             }
 
         } else { // Assume it is a brick
