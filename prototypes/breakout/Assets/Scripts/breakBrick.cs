@@ -18,7 +18,7 @@ public class breakBrick : MonoBehaviour
         
     }
 
-     void OnTriggerEnter(Collider collision)
+     void OnCollisionEnter(Collision collision)
     {
 
         // Enter on three conditions
@@ -32,6 +32,7 @@ public class breakBrick : MonoBehaviour
 
             // Make the brick invisible
             gameObject.GetComponent<MeshRenderer>().enabled = false;
+            GetComponent<BoxCollider>().enabled = false;
 
         }
 

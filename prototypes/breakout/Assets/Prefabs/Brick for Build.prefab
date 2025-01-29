@@ -119,3 +119,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   broken: 1
+  column: 0
+  row: 0
+  generator: {fileID: 0}

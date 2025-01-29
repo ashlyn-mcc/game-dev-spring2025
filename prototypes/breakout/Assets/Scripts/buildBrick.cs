@@ -39,6 +39,7 @@ public class buildBrick : MonoBehaviour
 
             // Make the brick visible
             gameObject.GetComponent<MeshRenderer>().enabled = true;
+            GetComponent<Collider>().isTrigger = false;
         }
 
     }

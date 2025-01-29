@@ -62,8 +62,8 @@ public class buildinBall : MonoBehaviour
         
     }
 
-    void OnTriggerEnter(Collider collision)
-    {
+    void OnCollisionEnter(Collision collision)
+    {   
 
         // If the collided object wasn't a brick enter and adjust the velocity based on what time of edge the ball hit
         if (collision.gameObject.GetComponent<buildBrick>() == null){
@@ -95,27 +95,27 @@ public class buildinBall : MonoBehaviour
 
             if (collision.gameObject.GetComponent<buildBrick>().broken == false){
 
-               // I used AI to help me with the calculations for this part:
+               // Convert the collision point to the cube's local space
+                    Vector3 localCollisionPoint = transform.InverseTransformPoint(collision.contacts[0].point);
 
-                // Convert the collision point to the cube's local space
-                Vector3 localCollisionPoint = transform.InverseTransformPoint(collision.transform.position);
+                    // Get the absolute values of the local collision point coordinates
+                    float x = Mathf.Abs(localCollisionPoint.x);
+                    float y = Mathf.Abs(localCollisionPoint.y);
+                    float z = Mathf.Abs(localCollisionPoint.z);
 
-                // Get the absolute values of the local collision point coordinates
-                float x = Mathf.Abs(localCollisionPoint.x);
-                float y = Mathf.Abs(localCollisionPoint.y);
-                float z = Mathf.Abs(localCollisionPoint.z);
-
-                // Check which axis has the greatest magnitude to determine the primary direction of collision
-                if (y > z && y > x) {
-                    // Collision on the top or bottom face of the cube
-                    velocity = Vector3.Scale(velocity, new Vector3(1, -1, 1));
-                    Debug.Log("hit top/bottom");
-                }
-                if (x > y && x > z) {
-                    // Collision on the left or right face of the cube
-                    velocity = Vector3.Scale(velocity, new Vector3(-1, 1, 1));
-                    Debug.Log("hit left/right");
-                }
+                    // Check which axis has the greatest magnitude to determine the primary direction of collision
+                    if (y > z && y > x) 
+                    {
+                        // Collision on the top or bottom face of the cube
+                        velocity = Vector3.Scale(velocity, new Vector3(1, -1, 1));
+                        Debug.Log("Hit top/bottom");
+                    }
+                    else if (x > y && x > z) 
+                    {
+                        // Collision on the left or right face of the cube
+                        velocity = Vector3.Scale(velocity, new Vector3(-1, 1, 1));
+                        Debug.Log("Hit left/right");
+                    }
 
 
             }
