@@ -30,6 +30,9 @@ public class breakBrick : MonoBehaviour
             collision.gameObject.GetComponent<breakoutBall>().brokenABrick = true;
             broken = true;
 
+            AudioSource audioSource = GetComponent<AudioSource>();
+            audioSource.Play();
+
             // Make the brick invisible
             gameObject.GetComponent<MeshRenderer>().enabled = false;
             GetComponent<BoxCollider>().enabled = false;

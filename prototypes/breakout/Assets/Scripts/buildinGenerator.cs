@@ -26,6 +26,7 @@ public class buildinGenerator : MonoBehaviour
     
     public TMP_Text builtText;
 
+    public int tempCount = 0;
     void Start()
     {
 
@@ -73,7 +74,8 @@ public class buildinGenerator : MonoBehaviour
                 }
             }
           }
-          
+
+          tempCount = builtCount;
           builtText.text = builtCount.ToString();
           builtCount = 0;
         

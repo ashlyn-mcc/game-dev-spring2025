@@ -28,6 +28,8 @@ public class breakoutGenerator : MonoBehaviour
     
     public TMP_Text brokenText;
 
+    public int tempCount = 0;
+
     void Start()
     {
 
@@ -72,6 +74,7 @@ public class breakoutGenerator : MonoBehaviour
             }
           }
           
+          tempCount = brokenCount;
           brokenText.text = brokenCount.ToString();
           brokenCount = 0;
 

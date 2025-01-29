@@ -37,6 +37,9 @@ public class buildBrick : MonoBehaviour
             collision.gameObject.GetComponent<buildinBall>().builtABrick = true;
             broken = false;
 
+            AudioSource audioSource = GetComponent<AudioSource>();
+            audioSource.Play();
+
             // Make the brick visible
             gameObject.GetComponent<MeshRenderer>().enabled = true;
             GetComponent<Collider>().isTrigger = false;

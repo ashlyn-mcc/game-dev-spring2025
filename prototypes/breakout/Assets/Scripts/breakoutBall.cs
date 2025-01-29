@@ -66,92 +66,81 @@ public class breakoutBall : MonoBehaviour
     }
 
 
-
-    void OnCollisionEnter(Collision collision)
+void OnCollisionEnter(Collision collision)
+{
+    // If the ball hasn't collided with a brick
+    if (collision.gameObject.GetComponent<breakBrick>() == null)
     {
+        // Test if it was a vertical, horizontal, paddle, or out of bounds surface hit.
+        if (collision.gameObject.CompareTag("Vertical") || collision.gameObject.CompareTag("Paddle"))
+        {
+            velocity = Vector3.Scale(velocity, new Vector3(1, -1, 0));
 
-        // If the ball hasn't collided with a brick
-        if (collision.gameObject.GetComponent<breakBrick>() == null){
+            if (collision.gameObject.CompareTag("Paddle"))
+            {
+                // Get contact point of collider
+                Collider paddleCollider = collision.gameObject.GetComponent<Collider>();
+                ContactPoint contact = collision.contacts[0];
 
+                // Calculate where on paddle the hit occured
+                Vector3 paddleCenter = paddleCollider.bounds.center;
+                float hitPosition = contact.point.x - paddleCenter.x;
 
-            // Test if it was a vertical, horizontal, paddle, or out of bounds surface hit.
-            // Change the velocity accordingly
-            if (collision.gameObject.CompareTag("Vertical") || collision.gameObject.CompareTag("Paddle")){
+                // Normalize it between 1 and -1 and then multiply by max angle (60 degrees)
+                float normalizedHitPosition = hitPosition / (paddleCollider.bounds.extents.x);
+                float angle = normalizedHitPosition * 60f;
+
+                // Figure out the new direction.
+                Vector3 newDirection = new Vector3(Mathf.Sin(Mathf.Deg2Rad * angle), Mathf.Abs(Mathf.Cos(Mathf.Deg2Rad * angle)), 0f);
+
+                // Keep it from getting crazy big
+                newDirection.Normalize();
                 
-                velocity = Vector3.Scale(velocity,new Vector3(1,-1,0));
+                // Apply the original speed
+                velocity = newDirection * velocity.magnitude;
 
-                if (collision.gameObject.CompareTag("Paddle")){
-                   brokenABrick = false; 
-                }
-
-            } else if (collision.gameObject.CompareTag("Horizontal")){
-
-                velocity = Vector3.Scale(velocity,new Vector3(-1,1,0));
-
-            } else if (collision.gameObject.CompareTag("OutOfBounds")){
-
-                gameObject.GetComponent<MeshRenderer>().enabled = false;
-                outOfBounds = true;
-                transform.position = new Vector3(0,-2.5f,-0.28f);
-                respawnTime += 1f;
+                brokenABrick = false;
             }
-
-        } else { 
-
-            // If the ball did collide with a brick, and the brick has not yet broken another brick
-            if (collision.gameObject.GetComponent<breakBrick>().broken == false){
-
-                    // Convert the collision point to the cube's local space
-                    Vector3 localCollisionPoint = transform.InverseTransformPoint(collision.contacts[0].point);
-
-                    // Get the absolute values of the local collision point coordinates
-                    float x = Mathf.Abs(localCollisionPoint.x);
-                    float y = Mathf.Abs(localCollisionPoint.y);
-                    float z = Mathf.Abs(localCollisionPoint.z);
-
-                    // Check which axis has the greatest magnitude to determine the primary direction of collision
-                    if (y > z && y > x) 
-                    {
-                        // Collision on the top or bottom face of the cube
-                        velocity = Vector3.Scale(velocity, new Vector3(1, -1, 1));
-                        Debug.Log("Hit top/bottom");
-                    }
-                    else if (x > y && x > z) 
-                    {
-                        // Collision on the left or right face of the cube
-                        velocity = Vector3.Scale(velocity, new Vector3(-1, 1, 1));
-                        Debug.Log("Hit left/right");
-                    }
-
-                // I used AI for the code inside this if statement:
-
-                // // Convert the collision point to the cube's local space
-                // Vector3 localCollisionPoint = transform.InverseTransformPoint(collision.transform.position);
-
-                // // Get the absolute values of the local collision point coordinates
-                // float x = Mathf.Abs(localCollisionPoint.x);
-                // float y = Mathf.Abs(localCollisionPoint.y);
-                // float z = Mathf.Abs(localCollisionPoint.z);
-
-                // // Check which axis has the greatest magnitude to determine the primary direction of collision
-                // if (y > z && y > x) {
-                //     // Collision on the top or bottom face of the cube
-                //     velocity = Vector3.Scale(velocity, new Vector3(1, -1, 1));
-                //     Debug.Log("hit top/bottom");
-                // }
-                // if (x > y && x > z) {
-                //     // Collision on the left or right face of the cube
-                //     velocity = Vector3.Scale(velocity, new Vector3(-1, 1, 1));
-                //     Debug.Log("hit left/right");
-                // }
-
-
-            } 
-
         }
-
-
+        else if (collision.gameObject.CompareTag("Horizontal"))
+        {
+            velocity = Vector3.Scale(velocity, new Vector3(-1, 1, 0));
+        }
+        else if (collision.gameObject.CompareTag("OutOfBounds"))
+        {
+            gameObject.GetComponent<MeshRenderer>().enabled = false;
+            outOfBounds = true;
+            transform.position = new Vector3(0, -2.5f, -0.28f);
+            respawnTime += 1f;
+        }
     }
+    else
+    {
+        // Handle brick collision
+        if (collision.gameObject.GetComponent<breakBrick>().broken == false)
+        {
+            // Convert the collision point to the cube's local space
+            Vector3 localCollisionPoint = transform.InverseTransformPoint(collision.contacts[0].point);
+
+            // Get the absolute values of the local collision point coordinates
+            float x = Mathf.Abs(localCollisionPoint.x);
+            float y = Mathf.Abs(localCollisionPoint.y);
+            float z = Mathf.Abs(localCollisionPoint.z);
+
+            // Check which axis has the greatest magnitude to determine the primary direction of collision
+            if (y > z && y > x)
+            {
+                velocity = Vector3.Scale(velocity, new Vector3(1, -1, 1));
+                Debug.Log("Hit top/bottom");
+            }
+            else if (x > y && x > z)
+            {
+                velocity = Vector3.Scale(velocity, new Vector3(-1, 1, 1));
+                Debug.Log("Hit left/right");
+            }
+        }
+    }
+}
 
 
 }

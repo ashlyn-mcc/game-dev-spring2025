@@ -12,6 +12,7 @@ TagManager:
   - OutOfBounds
   - Brick
   - Ball
+  - Back
   layers:
   - Default
   - TransparentFX

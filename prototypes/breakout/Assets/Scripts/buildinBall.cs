@@ -32,6 +32,10 @@ public class buildinBall : MonoBehaviour
     void Update()
     {
 
+        if (Input.GetKeyDown(KeyCode.Tab)){
+            velocity = new Vector3(0.01f,0.05f,0f);
+        }
+
         // If ball is in bounds, move its position based on velocity
         if (!outOfBounds){
 
@@ -71,11 +75,37 @@ public class buildinBall : MonoBehaviour
             
             if (collision.gameObject.CompareTag("Vertical") || collision.gameObject.CompareTag("Paddle")){
                 
-                velocity = Vector3.Scale(velocity,new Vector3(1,-1,0));
+                // Get contact point of collider
+                Collider paddleCollider = collision.gameObject.GetComponent<Collider>();
+                ContactPoint contact = collision.contacts[0];
+
+                // Calculate where on paddle the hit occured
+                Vector3 paddleCenter = paddleCollider.bounds.center;
+                float hitPosition = contact.point.x - paddleCenter.x;
+
+                // Normalize it between 1 and -1 and then multiply by max angle (60 degrees)
+                float normalizedHitPosition = hitPosition / paddleCollider.bounds.extents.x;
+                float angle = normalizedHitPosition * 60f; 
+
+                // Figure out the new direction.
+                Vector3 newDirection = new Vector3(Mathf.Sin(Mathf.Deg2Rad * angle), Mathf.Cos(Mathf.Deg2Rad * angle), 0f);
+
+                // Needs to move in the negative direction, because the build game is inversed
+                newDirection.y = newDirection.y * -1;
+
+                // Normalize it
+                newDirection.Normalize();
+
+                // Apply the original speed
+                velocity = newDirection * velocity.magnitude;
 
                 if (collision.gameObject.CompareTag("Paddle")){
                    builtABrick = false; 
                 }
+
+            } else if (collision.gameObject.CompareTag("Back")){
+                
+                velocity = Vector3.Scale(velocity,new Vector3(0,-1,0));
 
             } else if (collision.gameObject.CompareTag("Horizontal")){
 
@@ -88,6 +118,8 @@ public class buildinBall : MonoBehaviour
                 transform.position = new Vector3(0,4.5f,-0.28f);
                 respawnTime += 1f;
             }
+
+        Debug.Log(velocity);
 
         } else { // Enter if the collided object was a brick
 
