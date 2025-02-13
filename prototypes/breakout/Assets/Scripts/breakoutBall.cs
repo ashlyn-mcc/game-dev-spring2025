@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
+
 
 public class breakoutBall : MonoBehaviour
 {
@@ -26,6 +28,11 @@ public class breakoutBall : MonoBehaviour
     public bool brokenABrick = false;
 
     public bool frozen = false;
+
+    public TMP_Text respawnText;
+
+    public GameObject textForRespawn;
+
     
     void Start()
     {
@@ -48,6 +55,19 @@ public class breakoutBall : MonoBehaviour
             newBallTimer += Time.deltaTime;
             transform.position = new Vector3(0,-2.5f,-0.28f);
             counter++;
+            textForRespawn.SetActive(true);
+
+            // do a countdown: respawntime - newballtimer
+            // make sure it's a whole number
+            // set a text object active 
+            // change the vlaue of that text object to variable
+
+            double timeElapsed = respawnTime - newBallTimer;
+
+            timeElapsed = Math.Floor(timeElapsed);
+
+            respawnText.text = timeElapsed.ToString();
+
 
             // during the last 1.5 seconds, flash the ball so the player knows they are about to get another one
             if (newBallTimer > respawnTime - 1.5 && counter % 50 == 0){
@@ -57,6 +77,7 @@ public class breakoutBall : MonoBehaviour
 
             // Once time has elapsed, make the ball visible and resume gameplay
             if (respawnTime < newBallTimer){
+                textForRespawn.SetActive(false);
                 outOfBounds = false;
                 gameObject.GetComponent<MeshRenderer>().enabled = true;
                 newBallTimer = 0;

@@ -21,9 +21,9 @@ public class freezeUp : MonoBehaviour
     void Update()
     {
         if (goingUp){
-            speed = -0.001f;
+            speed = -0.01f;
         } else {
-             speed = 0.001f;
+             speed = 0.01f;
         }
 
         float y = transform.position.y + speed;

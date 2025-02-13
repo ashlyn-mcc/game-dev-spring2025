@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using System;
 
 public class buildinBall : MonoBehaviour
 {
@@ -24,6 +26,11 @@ public class buildinBall : MonoBehaviour
     public bool builtABrick = false;
 
     public bool frozen = false;
+
+    public TMP_Text respawnText;
+
+    public GameObject textForRespawn;
+    
     
     void Start()
     {
@@ -49,6 +56,14 @@ public class buildinBall : MonoBehaviour
             newBallTimer += Time.deltaTime;
             transform.position = new Vector3(0,4.5f,-0.28f);
             counter++;
+            textForRespawn.SetActive(true);
+
+
+            double timeElapsed = respawnTime - newBallTimer;
+
+            timeElapsed = Math.Floor(timeElapsed);
+
+            respawnText.text = timeElapsed.ToString();
 
             // Flash the ball on and off to indicate it is about to respawn
             if (newBallTimer > respawnTime - 1.5 && counter % 50 == 0){
@@ -58,6 +73,7 @@ public class buildinBall : MonoBehaviour
 
             // Resume gameplay after elapsed time
             if (respawnTime < newBallTimer){
+                textForRespawn.SetActive(false);
                 outOfBounds = false;
                 gameObject.GetComponent<MeshRenderer>().enabled = true;
                 newBallTimer = 0;
