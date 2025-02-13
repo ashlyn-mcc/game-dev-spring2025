@@ -1292,7 +1292,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.9150943, g: 0.5448649, b: 0.42733178, a: 1}
+  m_Color: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -1706,7 +1706,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecc664c4de4f744aeaaadd99e6664220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: {x: 0.005, y: 0.005, z: 0}
+  velocity: {x: 0.05, y: 0.05, z: 0}
   brokenABrick: 0
   frozen: 0
 --- !u!1 &961091708
@@ -1887,7 +1887,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0aa457a05a1043698dd6e35fd50e055, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: {x: 0.005, y: 0.005, z: 0}
+  velocity: {x: 0.05, y: 0.05, z: 0}
   builtABrick: 0
   frozen: 0
 --- !u!54 &979848193
