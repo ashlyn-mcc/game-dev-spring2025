@@ -151,6 +151,7 @@ public class buildinGenerator : MonoBehaviour
         Debug.Log("Column count" + columnCount.Length);
 
 
+        /////// I used AI to help me with this array sorting stuff ///////
 
         var indexedColumnCount = columnCount
                                     .Select((value, index) => new { Index = index, Value = value })
@@ -164,6 +165,8 @@ public class buildinGenerator : MonoBehaviour
         Debug.Log("Sorted Columns" + sortedColumns);
 
         int[] topFiveColumnIndices = sortedColumns.Select(x => x.Index).ToArray();
+
+        //////////////////////////////////////////////////////////
 
         for (int i = 0; i < topFiveColumnIndices.Length;i++){
             Debug.Log("#"+i+". "+topFiveColumnIndices[i]);
