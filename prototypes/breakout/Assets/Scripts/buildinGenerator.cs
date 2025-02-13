@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
+using System.Linq; 
+
 public class buildinGenerator : MonoBehaviour
 {
 
@@ -15,6 +18,8 @@ public class buildinGenerator : MonoBehaviour
 
     public GameObject brickPrefab;
 
+    private bool[] claimed; 
+
     private GameObject[,] brickArray; 
 
     public Material darkMaterial;
@@ -27,11 +32,20 @@ public class buildinGenerator : MonoBehaviour
     public TMP_Text builtText;
 
     public int tempCount = 0;
+
+    public breakoutGenerator breakGen;
+
     void Start()
     {
 
         // Create the 2D array of bricks
         brickArray = new GameObject[numColumns, numRows];
+
+         claimed = new bool[numRows];
+
+        for (int i = 0; i < numRows; i++){
+            claimed[i] = false;
+        }
 
         for (int i = 0; i < numColumns; i++){
             for (int j = 0; j < numRows; j++){
@@ -67,12 +81,20 @@ public class buildinGenerator : MonoBehaviour
     void Update()
     {
 
-          for (int i = 0; i < numColumns; i++){
-            for (int j = 0; j < numRows; j++){
-                if (!brickArray[i,j].GetComponent<buildBrick>().broken){
+        int tempBuiltCount = 0;
+
+          for (int i = 0; i < numRows; i++){
+            for (int j = 0; j < numColumns; j++){
+                if (!brickArray[j,i].GetComponent<buildBrick>().broken){
                     builtCount++;
+                    tempBuiltCount++;
+                }
+
+                 if (tempBuiltCount == 10){
+                   reverseProgress(i);
                 }
             }
+              tempBuiltCount = 0;
           }
 
           tempCount = builtCount;
@@ -94,4 +116,88 @@ public class buildinGenerator : MonoBehaviour
         }
         return true;
     }
+
+
+    void reverseProgress(int rowNum){
+
+        Debug.Log("Entered reverse Progress");
+
+        if (!claimed[rowNum]){
+            claimed[rowNum] = true;
+            breakGen.underAttack();
+        }
+    }
+
+    // function that will find built bricks.
+    // break the lowest one's possible in five rows
+
+    public void underAttack(){
+
+        Debug.Log("Entered Under Attack");
+
+        int[] columnCount = new int[numColumns];  
+
+        for (int i = 0; i < numColumns; i++)
+        {
+            for (int j = 0; j < numRows; j++)
+            {
+                if (brickArray[i, j].GetComponent<buildBrick>().broken == false)
+                {
+                    columnCount[i]++;
+                }
+            }
+        }
+
+        Debug.Log("Column count" + columnCount.Length);
+
+
+
+        var indexedColumnCount = columnCount
+                                    .Select((value, index) => new { Index = index, Value = value })
+                                    .ToArray();
+
+        var sortedColumns = indexedColumnCount
+                                .OrderByDescending(x => x.Value)
+                                .Take(5) 
+                                .ToArray();
+
+        Debug.Log("Sorted Columns" + sortedColumns);
+
+        int[] topFiveColumnIndices = sortedColumns.Select(x => x.Index).ToArray();
+
+        for (int i = 0; i < topFiveColumnIndices.Length;i++){
+            Debug.Log("#"+i+". "+topFiveColumnIndices[i]);
+        }
+
+        // go to each of the columns
+        for (int i = 0; i < 5; i++)
+        {
+            Debug.Log("Entering column for loop");
+            int columnIndex = topFiveColumnIndices[i];
+
+
+            for (int j = numRows-1; j >= 0; j--)
+            {
+
+                Debug.Log("Entering row for loop");
+
+              if (!brickArray[columnIndex,j].GetComponent<buildBrick>().broken){
+
+                Debug.Log("Entering innermost if");
+
+                brickArray[columnIndex,j].GetComponent<buildBrick>().broken = true;
+                brickArray[columnIndex,j].GetComponent<MeshRenderer>().enabled = false;
+                brickArray[columnIndex,j].GetComponent<Collider>().isTrigger = true;
+                break;
+
+              }
+
+            }
+        }
+
+
+
+    }
+
+    
 }

@@ -6,7 +6,7 @@ public class buildinBall : MonoBehaviour
 {
 
     // The velocity of the ball
-    private Vector3 velocity = new Vector3 (0.05f, 0.05f, 0f);
+    public Vector3 velocity = new Vector3 (0.05f, 0.05f, 0f);
 
     // Whether it's gone out of bounds
     private bool outOfBounds = false;
@@ -22,6 +22,8 @@ public class buildinBall : MonoBehaviour
 
     // Whether the ball has already built a brick since last hitting the paddle
     public bool builtABrick = false;
+
+    public bool frozen = false;
     
     void Start()
     {
@@ -37,11 +39,11 @@ public class buildinBall : MonoBehaviour
         }
 
         // If ball is in bounds, move its position based on velocity
-        if (!outOfBounds){
+        if (!outOfBounds && !frozen){
 
             transform.position = transform.position + velocity;
 
-        } else { // If ball is out of bounds
+        } else if (outOfBounds){ // If ball is out of bounds
 
             // Start the timer for a new ball
             newBallTimer += Time.deltaTime;

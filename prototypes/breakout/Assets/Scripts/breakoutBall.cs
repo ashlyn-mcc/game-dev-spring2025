@@ -7,7 +7,7 @@ public class breakoutBall : MonoBehaviour
 {
 
     // Velocity of the ball
-    private Vector3 velocity = new Vector3 (0.05f, 0.05f, 0f);
+    public Vector3 velocity = new Vector3 (0.05f, 0.05f, 0f);
 
     // Whether or not the ball has gone behind the paddle
     private bool outOfBounds = false;
@@ -24,6 +24,8 @@ public class breakoutBall : MonoBehaviour
 
     // Whether the ball has broken a brick since it last hit the paddle
     public bool brokenABrick = false;
+
+    public bool frozen = false;
     
     void Start()
     {
@@ -36,7 +38,7 @@ public class breakoutBall : MonoBehaviour
     {
 
         // As long as the ball is in bounds, move it according to its velocity
-        if (!outOfBounds){
+        if (!outOfBounds && !frozen){
 
             transform.position = transform.position + velocity;
 
