@@ -15,8 +15,11 @@ public class PlatformerPlayerController : MonoBehaviour
     private float jumpForce = 8;
     private float gravity = -18f;
     private int jumpCount = 0;
+
     private Transform platform;
     private Vector3 platformPreviousPos;
+    private Vector3 platformVelocity;
+
     private int gemsCollected = 0;
     private Vector3 startPosition; 
 
@@ -30,7 +33,7 @@ public class PlatformerPlayerController : MonoBehaviour
     {
         if (cc.isGrounded)
         {
-            yVelocity = -2;
+            yVelocity = -10;
             jumpCount = 0;
         }
         else
@@ -42,7 +45,7 @@ public class PlatformerPlayerController : MonoBehaviour
         {
             jumpCount++;
             yVelocity = jumpForce;
-            transform.SetParent(null);
+            platform = null; // Remove platform influence when jumping
         }
 
         float hAxis = Input.GetAxis("Horizontal");
@@ -56,15 +59,20 @@ public class PlatformerPlayerController : MonoBehaviour
 
         velocity.y = yVelocity;
 
+        // Apply platform movement correction
         if (platform != null)
         {
-            Vector3 platformMovement = platform.position - platformPreviousPos;
-            cc.Move(platformMovement);
+            platformVelocity = platform.position - platformPreviousPos;
+            velocity += platformVelocity / Time.deltaTime; // Adjust for platform motion
         }
 
         velocity = Vector3.ClampMagnitude(velocity, 10);
         cc.Move(velocity * Time.deltaTime);
-        platformPreviousPos = platform != null ? platform.position : platformPreviousPos;
+
+        if (platform != null)
+        {
+            platformPreviousPos = platform.position;
+        }
     }
 
     void OnTriggerEnter(Collider collision)
@@ -79,7 +87,6 @@ public class PlatformerPlayerController : MonoBehaviour
         {
             platform = collision.transform;
             platformPreviousPos = platform.position;
-            transform.SetParent(platform);
         }
 
         if (collision.CompareTag("collectable"))
@@ -105,14 +112,13 @@ public class PlatformerPlayerController : MonoBehaviour
 
         if (collision.CompareTag("horizontal") || collision.CompareTag("vertical"))
         {
-            transform.SetParent(null);
             platform = null;
         }
     }
 
     void ResetPlayerPosition()
     {
-        transform.SetParent(null); 
+        platform = null;
         cc.enabled = false;
         transform.position = startPosition;
         cc.enabled = true; 

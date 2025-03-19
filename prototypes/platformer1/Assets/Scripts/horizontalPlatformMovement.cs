@@ -10,6 +10,7 @@ public class HorizontalPlatformMovement : MonoBehaviour
 
     private Vector3 startPos;
     private Vector3 targetPos;
+    
     private bool movingLeft = true;
 
     void Start()
