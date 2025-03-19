@@ -45,7 +45,7 @@ public class PlatformerPlayerController : MonoBehaviour
         {
             jumpCount++;
             yVelocity = jumpForce;
-            platform = null; // Remove platform influence when jumping
+            platform = null; 
         }
 
         float hAxis = Input.GetAxis("Horizontal");
@@ -59,11 +59,11 @@ public class PlatformerPlayerController : MonoBehaviour
 
         velocity.y = yVelocity;
 
-        // Apply platform movement correction
+        
         if (platform != null)
         {
             platformVelocity = platform.position - platformPreviousPos;
-            velocity += platformVelocity / Time.deltaTime; // Adjust for platform motion
+            velocity += platformVelocity / Time.deltaTime; 
         }
 
         velocity = Vector3.ClampMagnitude(velocity, 10);
