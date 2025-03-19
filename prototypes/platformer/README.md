@@ -1,6 +1,7 @@
 # Platformer Reflection - Ashlyn McClendon
 
-### 0. Platformers Analysis 1: [View here](http://ashlyn-mcc.github.io/game-dev-spring2025/builds/platformer-1) 
+### 0. Platformers Analysis 1: [View here](https://github.com/ashlyn-mcc/game-dev-spring2025/tree/main/prototypes/platformer/analysis.md
+) 
 
 
 ### 1. Platformer Round 1: [Play here](http://ashlyn-mcc.github.io/game-dev-spring2025/builds/platformer-1) 
