@@ -5,7 +5,7 @@ public class PanelManager : MonoBehaviour
 {
     public GameObject[] panels;
     public Button[] buttons;
-    public Camera mainCamera; // Assign your main camera here in the Inspector
+    public Camera mainCamera; 
 
     private int activePanelIndex = -1;
     private Vector3 originalCameraPosition;
@@ -13,13 +13,10 @@ public class PanelManager : MonoBehaviour
 
     void Start()
     {
-        // Store original camera position
-        if (mainCamera != null)
-        {
-            originalCameraPosition = mainCamera.transform.position;
-        }
+        
+        
+        originalCameraPosition = mainCamera.transform.position;
 
-        // Attach button listeners
         for (int i = 0; i < buttons.Length; i++)
         {
             int index = i;
@@ -31,31 +28,26 @@ public class PanelManager : MonoBehaviour
     {
         if (activePanelIndex == panelIndex)
         {
-            // Deactivate all panels
             foreach (GameObject panel in panels)
             {
                 panel.SetActive(false);
             }
             activePanelIndex = -1;
 
-            // Move camera back
             ResetCameraPosition();
         }
         else
         {
-            // Deactivate all panels
             foreach (GameObject panel in panels)
             {
                 panel.SetActive(false);
             }
 
-            // Activate selected panel
             if (panelIndex >= 0 && panelIndex < panels.Length)
             {
                 panels[panelIndex].SetActive(true);
                 activePanelIndex = panelIndex;
 
-                // Move camera left
                 MoveCameraLeft();
             }
         }
@@ -65,7 +57,7 @@ public class PanelManager : MonoBehaviour
 {
     if (mainCamera != null && !cameraMoved)
     {
-        mainCamera.transform.position = originalCameraPosition + new Vector3(2f, 0f, -3.5f); // +2 on x
+        mainCamera.transform.position = originalCameraPosition + new Vector3(2f, 0f, -3.5f); 
         cameraMoved = true;
     }
 }
