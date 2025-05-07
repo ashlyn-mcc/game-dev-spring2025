@@ -40,7 +40,7 @@ public class CellScript : MonoBehaviour
         selectionPlane.SetActive(true);
 
         // Update the selection plane's position to match the state's height
-        float height = transform.position.y + State.height + 0.2f;
+        float height = transform.position.y + State.height + 0.1f;
         selectionPlane.transform.position = new Vector3(selectionPlane.transform.position.x, height, selectionPlane.transform.position.z);
     }
 
