@@ -3,31 +3,80 @@ using UnityEngine.UI;
 
 public class PanelManager : MonoBehaviour
 {
-    public GameObject[] panels;      // Assign your panels here (size = 3)
-    public Button[] buttons;         // Assign your 3 buttons here
+    public GameObject[] panels;
+    public Button[] buttons;
+    public Camera mainCamera; // Assign your main camera here in the Inspector
+
+    private int activePanelIndex = -1;
+    private Vector3 originalCameraPosition;
+    private bool cameraMoved = false;
 
     void Start()
     {
-        // Attach button click listeners
+        // Store original camera position
+        if (mainCamera != null)
+        {
+            originalCameraPosition = mainCamera.transform.position;
+        }
+
+        // Attach button listeners
         for (int i = 0; i < buttons.Length; i++)
         {
-            int index = i; // Capture the index for the lambda
-            buttons[i].onClick.AddListener(() => ShowPanel(index));
+            int index = i;
+            buttons[i].onClick.AddListener(() => TogglePanel(index));
         }
     }
 
-    void ShowPanel(int panelIndex)
+    void TogglePanel(int panelIndex)
     {
-        // Disable all panels
-        foreach (GameObject panel in panels)
+        if (activePanelIndex == panelIndex)
         {
-            panel.SetActive(false);
-        }
+            // Deactivate all panels
+            foreach (GameObject panel in panels)
+            {
+                panel.SetActive(false);
+            }
+            activePanelIndex = -1;
 
-        // Enable the selected panel
-        if (panelIndex >= 0 && panelIndex < panels.Length)
+            // Move camera back
+            ResetCameraPosition();
+        }
+        else
         {
-            panels[panelIndex].SetActive(true);
+            // Deactivate all panels
+            foreach (GameObject panel in panels)
+            {
+                panel.SetActive(false);
+            }
+
+            // Activate selected panel
+            if (panelIndex >= 0 && panelIndex < panels.Length)
+            {
+                panels[panelIndex].SetActive(true);
+                activePanelIndex = panelIndex;
+
+                // Move camera left
+                MoveCameraLeft();
+            }
+        }
+    }
+
+    void MoveCameraLeft()
+{
+    if (mainCamera != null && !cameraMoved)
+    {
+        mainCamera.transform.position = originalCameraPosition + new Vector3(2f, 0f, -3.5f); // +2 on x
+        cameraMoved = true;
+    }
+}
+
+
+    void ResetCameraPosition()
+    {
+        if (mainCamera != null && cameraMoved)
+        {
+            mainCamera.transform.position = originalCameraPosition;
+            cameraMoved = false;
         }
     }
 }
